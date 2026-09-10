@@ -1,17 +1,18 @@
 <div align="center">
 
 # 流光逸影
+<br>
+**家庭私人影院：手机扫码、电视DLNA，直接播放电脑里的电影。**
+**单文件零安装** · **扫码即看** · **DLNA 直连** · **一个 JSON 配置**
 
-**家庭私人影院：手机扫码、电视 DLNA，直接播放电脑里的电影。**
-
-[English](README.en.md) | 简体中文
 ![Go](https://img.shields.io/badge/Go-1.26%2B-00ADD8?logo=go&logoColor=white)
 ![Platform](https://img.shields.io/badge/platform-Windows-blue)
 ![License](https://img.shields.io/badge/license-MIT-green)
 
+[English](README.en.md) | 简体中文
+
 <img src="public/banner.jpg" alt="流光逸影产品图：手机扫码、电视媒体中心、电脑控制台三端观影" width="880">
 
-**单文件零安装** · **扫码即看** · **DLNA 直连** · **一个 JSON 配置**
 
 </div>
 
