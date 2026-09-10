@@ -1,7 +1,6 @@
 <div align="center">
 
-# 流光逸影
-<br>
+# 流光逸影<br>
 **家庭私人影院：手机扫码、电视DLNA，直接播放电脑里的电影。**
 <br>
 
@@ -118,7 +117,7 @@ go build -trimpath -ldflags "-s -w" -o liuguang-yiying.exe
 - 扫码关注公众号，获取 AI 测评与 Vibe Coding 实战分享：
 
 <div align="left">
-<img src="public/wechat-qr.png" alt="沃垠AI 公众号二维码" width="160">
+<img src="public/wechat-qr.png" alt="沃垠AI 公众号二维码" width="880">
 </div>
 
 ## 🤝 贡献
