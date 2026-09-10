@@ -118,7 +118,7 @@ go build -trimpath -ldflags "-s -w" -o liuguang-yiying.exe
 - 扫码关注公众号，获取 AI 测评与 Vibe Coding 实战分享：
 
 <div align="left">
-<img src="public/wechat-qr.png" alt="沃垠AI 公众号二维码" width="880">
+<img src="public/wechat-qr.png" alt="沃垠AI 公众号二维码" width="680">
 </div>
 
 ## 🤝 贡献
