@@ -3,7 +3,7 @@
 # 流光逸影
 <br>
 家庭私人影院：手机扫码、电视DLNA，直接播放电脑里的电影。<br>
-**单文件零安装** · **扫码即看** · **DLNA直连** · **一个JSON配置**
+**单文件零安装** · **扫码即看** · **DLNA直连** · **一个JSON配置**<br>
 
 ![Go](https://img.shields.io/badge/Go-1.26%2B-00ADD8?logo=go&logoColor=white)
 ![Platform](https://img.shields.io/badge/platform-Windows-blue)
