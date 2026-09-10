@@ -1,0 +1,22 @@
+# 编译产物（含构建路径等本机信息，请勿入库）
+*.exe
+
+# 个人配置（含本机磁盘布局，请复制 config.example.json 改名使用）
+config.json
+server.log
+
+# 本地测试媒体
+testmedia/
+新片库/
+
+# 影视剧照背景（版权素材，勿入库）
+背景图.png
+
+# public 原始大图（仓库只保留压缩版 banner.jpg / wechat-qr.png）
+public/产品图.png
+public/公众号二维码.png
+
+# 系统 / 编辑器
+.DS_Store
+Thumbs.db
+desktop.ini

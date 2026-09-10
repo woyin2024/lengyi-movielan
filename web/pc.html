@@ -1,0 +1,363 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="theme-color" content="#0a0a0d">
+<title>流光逸影 · 电脑端控制台</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Serif+SC:wght@600;900&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #0a0a0d;
+    --line: rgba(235, 225, 205, .1);
+    --line-soft: rgba(235, 225, 205, .06);
+    --text: #f2ede2;
+    --muted: #a39d8f;
+    --dim: #6b675d;
+    --gold: #d9ab5c;
+    --gold-bright: #edc98a;
+    --gold-soft: rgba(217, 171, 92, .13);
+    --danger: #e07a72;
+    --glass: rgba(11, 12, 16, .66);
+    --serif: "Noto Serif SC", "Songti SC", "STSong", "SimSun", serif;
+    --sans: -apple-system, "PingFang SC", "HarmonyOS Sans SC", "MiSans", "Microsoft YaHei", sans-serif;
+    --mono: ui-monospace, "SF Mono", "Cascadia Mono", Consolas, monospace;
+  }
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  html, body { height: 100%; }
+  body {
+    font-family: var(--sans); color: var(--text);
+    background: #0a0a0d url("/bg.jpg") center 40% / cover no-repeat fixed;
+    -webkit-font-smoothing: antialiased;
+    overflow: hidden;
+  }
+  /* 影院遮罩：上下压暗 + 中央聚光，保证前景可读、背景仍是主角 */
+  body::before {
+    content: ""; position: fixed; inset: 0; z-index: 0; pointer-events: none;
+    background:
+      radial-gradient(58% 46% at 50% 34%, rgba(8, 8, 10, .42) 0%, rgba(8, 8, 10, .12) 60%, transparent 100%),
+      linear-gradient(180deg, rgba(8, 8, 10, .52) 0%, rgba(8, 8, 10, .18) 26%, rgba(8, 8, 10, .22) 55%, rgba(7, 7, 9, .78) 100%);
+  }
+  /* 胶片颗粒 */
+  body::after {
+    content: ""; position: fixed; inset: 0; z-index: 999; pointer-events: none; opacity: .05;
+    background-image: url("data:image/svg+xml;utf8,%3Csvg xmlns='http://www.w3.org/2000/svg' width='140' height='140'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='140' height='140' filter='url(%23n)' opacity='.45'/%3E%3C/svg%3E");
+  }
+  ::selection { background: var(--gold-soft); color: var(--gold); }
+  ::-webkit-scrollbar { width: 9px; }
+  ::-webkit-scrollbar-thumb { background: rgba(236,231,220,.14); border-radius: 100px; border: 3px solid transparent; background-clip: content-box; }
+  ::-webkit-scrollbar-track { background: transparent; }
+
+  .stage {
+    position: relative; z-index: 1;
+    height: 100vh; display: flex; flex-direction: column;
+  }
+
+  /* ---------- 顶栏 ---------- */
+  .top {
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 20px 32px 0; flex-shrink: 0;
+  }
+  .top .tbrand { display: flex; align-items: center; gap: 10px; font-size: 12px; letter-spacing: .3em; color: var(--muted); }
+  .top .tbrand .tico { width: 18px; height: 18px; color: var(--gold); }
+  .top .tbrand .tico svg { width: 100%; height: 100%; }
+  .top .tnote { font-size: 11px; letter-spacing: .22em; color: var(--dim); }
+
+  /* ---------- HERO：字标 + 二维码 ---------- */
+  .hero {
+    flex: 1; min-height: 0;
+    display: flex; flex-direction: column; align-items: center; justify-content: center;
+    text-align: center; gap: clamp(10px, 2.2vh, 22px); padding: 8px 24px;
+  }
+  .wordmark {
+    font-family: var(--serif); font-weight: 900;
+    font-size: clamp(44px, 11.5vh, 92px); line-height: 1.08;
+    letter-spacing: .24em; text-indent: .24em; white-space: nowrap;
+    background: linear-gradient(180deg, #fffdf6 18%, #f0e4c6 58%, #d9c592 100%);
+    -webkit-background-clip: text; background-clip: text; color: transparent;
+    filter: drop-shadow(0 4px 26px rgba(0, 0, 0, .65));
+  }
+  .tagline {
+    display: flex; align-items: center; gap: 16px;
+    font-family: var(--mono); font-size: clamp(10px, 1.5vh, 12px);
+    color: rgba(236, 231, 220, .72); letter-spacing: .5em; text-indent: .5em;
+    text-shadow: 0 2px 12px rgba(0, 0, 0, .6);
+  }
+  .tagline .rule { width: 44px; height: 1px; background: linear-gradient(90deg, transparent, var(--gold), transparent); }
+
+  .qrlockup {
+    display: flex; align-items: center; gap: clamp(18px, 3vw, 34px);
+    animation: rise .8s .15s cubic-bezier(.22,.7,.25,1) backwards;
+  }
+  .qrplate {
+    background: #f5f1e8; border-radius: 16px; padding: 12px; display: block;
+    width: clamp(178px, 30vh, 240px); height: auto;
+    box-shadow: 0 0 0 1px rgba(217, 171, 92, .55), 0 0 0 8px rgba(217, 171, 92, .08),
+                0 26px 70px rgba(0, 0, 0, .62);
+  }
+  .qr-side { text-align: left; display: flex; flex-direction: column; gap: 12px; }
+  .scan-hint { font-size: 12px; letter-spacing: .3em; color: var(--muted); text-shadow: 0 2px 10px rgba(0,0,0,.6); }
+  .scan-hint b { color: var(--gold-bright); font-weight: 600; }
+  .url {
+    font-family: var(--mono); font-size: clamp(12px, 1.8vh, 14px); color: var(--gold-bright);
+    word-break: break-all; letter-spacing: .01em;
+    background: rgba(11, 12, 16, .6); border: 1px solid rgba(217, 171, 92, .28);
+    -webkit-backdrop-filter: blur(12px); backdrop-filter: blur(12px);
+    border-radius: 12px; padding: 11px 16px; max-width: 320px;
+    box-shadow: 0 8px 26px rgba(0, 0, 0, .35);
+  }
+  @keyframes rise { from { opacity: 0; transform: translateY(14px); } }
+  .hero .wordmark { animation: rise .8s cubic-bezier(.22,.7,.25,1) backwards; }
+  .hero .tagline { animation: rise .8s .08s cubic-bezier(.22,.7,.25,1) backwards; }
+
+  /* ---------- 底部操作台 ---------- */
+  .deck {
+    flex-shrink: 0; height: clamp(228px, 33vh, 316px);
+    display: grid; grid-template-columns: 340px 1fr; gap: 14px;
+    padding: 0 16px 16px;
+  }
+  .pane {
+    background: var(--glass);
+    -webkit-backdrop-filter: blur(20px); backdrop-filter: blur(20px);
+    border: 1px solid var(--line); border-radius: 18px;
+    display: flex; flex-direction: column; overflow: hidden;
+    box-shadow: 0 18px 50px rgba(0, 0, 0, .4);
+  }
+  .pane-head {
+    display: flex; align-items: center; gap: 12px; flex-shrink: 0;
+    font-family: var(--mono); font-size: 11px; color: var(--gold); letter-spacing: .26em;
+    padding: 15px 18px 13px; border-bottom: 1px solid var(--line-soft);
+  }
+  .pane-head::after { content: ""; height: 1px; flex: 1; background: var(--line-soft); }
+
+  /* 共享位置 */
+  #roots { list-style: none; overflow-y: auto; padding: 6px 18px 12px; }
+  #roots li { display: flex; align-items: center; gap: 12px; padding: 10px 2px; border-bottom: 1px solid var(--line-soft); font-size: 13px; }
+  #roots li > span:first-child { color: var(--gold); display: grid; place-items: center; width: 20px; flex-shrink: 0; }
+  #roots li > span:first-child svg { width: 17px; height: 17px; }
+  #roots .rp { flex: 1; min-width: 0; word-break: break-all; color: #d5d0c4; font-family: var(--mono); font-size: 11.5px; letter-spacing: .01em; line-height: 1.55; }
+  .del { color: var(--danger); cursor: pointer; padding: 4px 9px; flex-shrink: 0; font-size: 11.5px; letter-spacing: .06em; border-radius: 8px; opacity: .75; transition: opacity .15s, background .15s; }
+  .del:hover { opacity: 1; background: rgba(224, 122, 114, .12); }
+  .roots-empty { color: var(--dim); font-size: 12.5px; padding: 10px 2px; letter-spacing: .05em; }
+
+  /* 磁盘浏览 */
+  .pane-browse .pathbar {
+    display: flex; align-items: center; gap: 10px; flex-shrink: 0;
+    padding: 12px 18px; border-bottom: 1px solid var(--line-soft);
+  }
+  .pathbar .crumb-ico { width: 14px; height: 14px; color: var(--gold); flex-shrink: 0; }
+  .pathbar .crumb-ico svg { width: 14px; height: 14px; }
+  #crumbs { font-size: 11.5px; color: var(--dim); word-break: break-all; letter-spacing: .03em; flex: 1; min-width: 0; }
+  #crumbs a { color: var(--muted); cursor: pointer; text-decoration: none; padding: 3px 2px; transition: color .15s; }
+  #crumbs a:hover { color: var(--gold); }
+  #crumbs a:first-child { color: var(--gold); }
+  #dirs {
+    list-style: none; flex: 1; min-height: 0; overflow-y: auto; padding: 8px 10px;
+    display: grid; grid-template-columns: repeat(auto-fill, minmax(190px, 1fr)); gap: 4px; align-content: start;
+  }
+  #dirs li {
+    padding: 10px 12px; font-size: 13px; cursor: pointer; border-radius: 10px;
+    display: flex; gap: 11px; align-items: center; transition: background .12s;
+    border-bottom: none; min-width: 0;
+  }
+  #dirs li:hover { background: var(--gold-soft); }
+  #dirs li > span:first-child { color: var(--gold); display: grid; place-items: center; width: 18px; flex-shrink: 0; }
+  #dirs li > span:first-child svg { width: 16px; height: 16px; }
+  #dirs li > span:last-child { flex: 1; min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+  #dirs .empty { color: var(--dim); cursor: default; grid-column: 1 / -1; }
+  #dirs .empty:hover { background: none; }
+  .actions {
+    display: flex; align-items: center; gap: 16px; flex-shrink: 0;
+    padding: 11px 16px; border-top: 1px solid var(--line-soft);
+  }
+  #cur { font-size: 11.5px; color: var(--muted); flex: 1; min-width: 160px; word-break: break-all; letter-spacing: .02em; }
+  button { font-family: var(--sans); }
+  #pick {
+    background: linear-gradient(160deg, var(--gold-bright), var(--gold));
+    border: none; color: #211a0d; border-radius: 10px; padding: 10px 20px;
+    font-size: 12.5px; font-weight: 600; letter-spacing: .08em; cursor: pointer;
+    box-shadow: 0 4px 16px rgba(217, 171, 92, .2);
+    transition: transform .15s, box-shadow .15s, filter .15s; flex-shrink: 0;
+  }
+  #pick:hover { filter: brightness(1.06); box-shadow: 0 6px 22px rgba(217, 171, 92, .3); transform: translateY(-1px); }
+  #pick:active { transform: translateY(0); }
+  #pick:disabled { background: rgba(236,231,220,.08); color: var(--dim); box-shadow: none; cursor: not-allowed; transform: none; }
+
+  /* ---------- Toast ---------- */
+  #toast {
+    position: fixed; left: 50%; bottom: 30px; transform: translateX(-50%) translateY(6px);
+    background: rgba(15, 16, 21, .92); color: var(--text);
+    border: 1px solid rgba(217, 171, 92, .25); border-radius: 100px;
+    padding: 12px 22px; font-size: 13px; letter-spacing: .04em;
+    opacity: 0; transition: opacity .25s, transform .25s; pointer-events: none;
+    max-width: 80vw; z-index: 100; backdrop-filter: blur(14px); -webkit-backdrop-filter: blur(14px);
+  }
+  #toast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
+
+  /* ---------- 适配 ---------- */
+  @media (max-width: 940px) {
+    body { overflow: auto; }
+    .stage { height: auto; min-height: 100vh; }
+    .deck { grid-template-columns: 1fr; height: auto; }
+    .pane-browse #dirs { max-height: 260px; }
+    .qr-side { text-align: center; }
+    .qrlockup { flex-direction: column; }
+  }
+  @media (max-height: 700px) {
+    .wordmark { letter-spacing: .16em; text-indent: .16em; }
+    .deck { height: clamp(210px, 36vh, 280px); }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    *, *::before, *::after { animation: none !important; transition: none !important; }
+  }
+</style>
+</head>
+<body>
+<div class="stage">
+
+  <div class="top">
+    <div class="tbrand">
+      <span class="tico">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="16" rx="2.5"/><path d="M7.5 4v16M16.5 4v16M3 9.5h4.5M3 14.5h4.5M16.5 9.5H21M16.5 14.5H21"/></svg>
+      </span>
+      流光逸影 · 控制台
+    </div>
+    <div class="tnote">此页面仅本机可访问</div>
+  </div>
+
+  <section class="hero">
+    <div class="wordmark">流光逸影</div>
+    <div class="tagline"><span class="rule"></span>局域网私人影院 · PRIVATE CINEMA<span class="rule"></span></div>
+    <div class="qrlockup">
+      <img class="qrplate" src="/qr.png" width="240" height="240" alt="QR">
+      <div class="qr-side">
+        <div class="scan-hint">手机连 <b>同一 Wi-Fi</b><br>扫码即入影库</div>
+        <div class="url">{{URL}}</div>
+      </div>
+    </div>
+  </section>
+
+  <section class="deck">
+    <div class="pane">
+      <div class="pane-head">01 · 共享位置</div>
+      <ul id="roots"></ul>
+    </div>
+    <div class="pane pane-browse">
+      <div class="pane-head">02 · 磁盘浏览</div>
+      <div class="pathbar">
+        <span class="crumb-ico">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><rect x="2.5" y="4" width="19" height="13" rx="2"/><path d="M9 21h6M12 17v4"/></svg>
+        </span>
+        <div id="crumbs"></div>
+      </div>
+      <ul id="dirs"></ul>
+      <div class="actions">
+        <span id="cur"></span>
+        <button id="pick" onclick="pickCurrent()">✔ 把当前文件夹设为电影目录</button>
+      </div>
+    </div>
+  </section>
+
+</div>
+<div id="toast"></div>
+
+<script>
+const $ = s => document.querySelector(s);
+const KEY = "{{KEY}}";
+let curPath = '';   // 当前浏览到的磁盘路径（'' 表示盘符列表）
+
+const svgFolder = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M3 7.5A1.5 1.5 0 0 1 4.5 6h4l2 2h9A1.5 1.5 0 0 1 21 9.5v8A1.5 1.5 0 0 1 19.5 19h-15A1.5 1.5 0 0 1 3 17.5z"/></svg>';
+const svgDrive = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="8" width="18" height="9" rx="2"/><path d="M7 12h.01M11 12h6"/><path d="m7.5 8 3-4.5h3L16.5 8"/></svg>';
+
+function q(params) {
+  const p = new URLSearchParams(params);
+  if (KEY) p.set('key', KEY);
+  return p.toString();
+}
+function toast(msg, ms = 2600) {
+  const t = $('#toast'); t.textContent = msg; t.classList.add('show');
+  clearTimeout(t._h); t._h = setTimeout(() => t.classList.remove('show'), ms);
+}
+async function api(url, opts) {
+  const resp = await fetch(url, opts);
+  if (!resp.ok) { let m = '请求失败 ' + resp.status; try { m = (await resp.json()).error || m; } catch(e){} throw new Error(m); }
+  return resp.json();
+}
+const postJSON = (url, obj) => api(url, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(obj) });
+
+// ---------- 已共享列表 ----------
+async function loadRoots() {
+  try {
+    const data = await api('/api/roots?' + q({}));
+    const ul = $('#roots'); ul.innerHTML = '';
+    for (const r of data.roots) {
+      const li = document.createElement('li');
+      li.innerHTML = `<span>${svgFolder}</span><span class="rp"></span><span class="del">✕ 移除</span>`;
+      li.querySelector('.rp').textContent = r.dir;
+      li.querySelector('.del').onclick = async () => {
+        try { await postJSON('/api/roots/remove?' + q({}), { name: r.name }); toast('已移除'); loadRoots(); }
+        catch (e) { toast(e.message, 3600); }
+      };
+      ul.appendChild(li);
+    }
+    if (!data.roots.length) ul.innerHTML = '<li class="roots-empty">还没有共享文件夹，在右侧选一个</li>';
+  } catch (e) { toast(e.message); }
+}
+
+// ---------- 磁盘浏览 ----------
+async function browse(path) {
+  curPath = path;
+  try {
+    const data = await api('/api/browse?' + q({ path }));
+    renderCrumbs(path);
+    $('#cur').textContent = path ? '当前位置：' + path : '当前位置：盘符列表（请点进一个盘）';
+    $('#pick').disabled = !path;
+    const ul = $('#dirs'); ul.innerHTML = '';
+    if (!data.entries.length) {
+      ul.innerHTML = '<li class="empty">（这个文件夹里没有子文件夹）</li>';
+    }
+    for (const e of data.entries) {
+      const li = document.createElement('li');
+      li.innerHTML = `<span>${path ? svgFolder : svgDrive}</span><span></span>`;
+      li.querySelector('span:last-child').textContent = e.name;
+      li.onclick = () => browse(e.path);
+      ul.appendChild(li);
+    }
+  } catch (e) { toast(e.message, 3600); }
+}
+function renderCrumbs(path) {
+  const c = $('#crumbs'); c.innerHTML = '';
+  const home = document.createElement('a'); home.textContent = '此电脑';
+  home.onclick = () => browse(''); c.appendChild(home);
+  if (!path) return;
+  // 把 Windows 路径逐段拆开做面包屑
+  const norm = path.replace(/\\+$/, '');
+  const segs = norm.split('\\');
+  let acc = '';
+  segs.forEach((seg, i) => {
+    acc = i === 0 ? seg : acc + '\\' + seg;
+    c.appendChild(document.createTextNode('  ·  '));
+    const a = document.createElement('a');
+    a.textContent = i === 0 ? seg : seg;
+    let target = acc;
+    if (i === 0) target = seg + '\\';   // 盘符要保留反斜杠
+    a.onclick = () => browse(target);
+    c.appendChild(a);
+  });
+}
+async function pickCurrent() {
+  if (!curPath) return;
+  try {
+    await postJSON('/api/roots/add?' + q({}), { path: curPath });
+    toast('✅ 已固定为电影目录，手机首页立即可见');
+    loadRoots();
+  } catch (e) { toast(e.message, 3600); }
+}
+
+loadRoots();
+browse('');
+</script>
+</body>
+</html>
