@@ -34,17 +34,17 @@
 **方式一：下载成品**（推荐）
 
 <!-- TODO(user): 项目发布后，确认 Release 链接可访问 -->
-从 [Releases](https://github.com/woyin2024/lengyi-movielan/releases) 下载 `流光逸影.exe`，双击运行。
+从 [Releases](https://github.com/woyin2024/lengyi-movielan/releases) 下载 `liuguang-yiying.exe`，双击运行。
 
 **方式二：源码构建**（需 Go 1.26+）
 
 ```bash
 git clone https://github.com/woyin2024/lengyi-movielan.git
 cd lengyi-movielan
-go build -trimpath -ldflags "-s -w" -o 流光逸影.exe
+go build -trimpath -ldflags "-s -w" -o liuguang-yiying.exe
 ```
 
-双击 `流光逸影.exe`，自动打开电脑控制台，并输出：
+双击 `liuguang-yiying.exe`，自动打开电脑控制台，并输出：
 
 ```text
 ============================================
