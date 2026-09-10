@@ -1,17 +1,18 @@
 <div align="center">
 
-# 流光逸影<br>
-**家庭私人影院：手机扫码、电视DLNA，直接播放电脑里的电影。**
-<br>
+# 流光逸影
 
-![Go](https://img.shields.io/badge/Go-1.26%2B-00ADD8?logo=go&logoColor=white)
-![Platform](https://img.shields.io/badge/platform-Windows-blue)
-![License](https://img.shields.io/badge/license-MIT-green)
+**家庭私人影院：手机扫码、电视 DLNA，直接播放电脑里的电影。**
 
 [English](README.en.md) | 简体中文
 
 <img src="public/banner.jpg" alt="流光逸影产品图：手机扫码、电视媒体中心、电脑控制台三端观影" width="880">
 
+![Go](https://img.shields.io/badge/Go-1.26%2B-00ADD8?logo=go&logoColor=white)
+![Platform](https://img.shields.io/badge/platform-Windows-blue)
+![License](https://img.shields.io/badge/license-MIT-green)
+
+**单文件零安装** · **扫码即看** · **DLNA 直连** · **一个 JSON 配置**
 
 </div>
 
@@ -111,16 +112,13 @@ go build -trimpath -ldflags "-s -w" -o liuguang-yiying.exe
 
 ## 👤 关于作者
 
-**冷逸** —— 中国 Top AI 技术媒体「**沃垠AI**」博主，不会写代码的 Vibe Coding 开发者，喜欢死磕 Prompt、Skills 和 Agent。
+**冷逸** —— 中国 Top AI 技术媒体「**沃垠AI**」博主，不会写代码的 Vibe Coding 开发者，喜欢死磕 Prompt、Skills 和 Agent。产品、运营出身，主打 AI 深度测评。
 
-- **全平台统一账户**：沃垠AI
-- **标签**：产品、运营出身，AI深度测评，超级OPC
-- **内容矩阵**：公众号、小红书、知乎、GitHub、B站、X等
-- 
+- **全平台统一账户**：沃垠AI（公众号 · 小红书 · 知乎 · GitHub · B站 · X）
 - 扫码关注公众号，获取 AI 测评与 Vibe Coding 实战分享：
 
 <div align="left">
-<img src="public/公众号二维码.png" width="90%" alt="沃垠AI 公众号二维码" />
+<img src="public/wechat-qr.png" alt="沃垠AI 公众号二维码" width="360">
 </div>
 
 ## 🤝 贡献
@@ -130,5 +128,3 @@ go build -trimpath -ldflags "-s -w" -o liuguang-yiying.exe
 ## 📄 License
 
 [MIT](LICENSE) © 冷逸
-
-
