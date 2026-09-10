@@ -112,10 +112,11 @@ go build -trimpath -ldflags "-s -w" -o liuguang-yiying.exe
 
 ## 👤 关于作者
 
-**冷逸** —— 中国 Top AI 技术媒体「**沃垠AI**」博主，不会写代码的 Vibe Coding 开发者，喜欢死磕 Prompt、Skills 和 Agent。产品、运营出身，主打 AI 深度测评。
+**冷逸**，中国 Top AI 技术媒体「沃垠AI」博主，不会写代码的 Vibe Coding 开发者，喜欢死磕 Prompt、Skills 和 Agent。
 
-- **全平台统一账户**：沃垠AI（公众号 · 小红书 · 知乎 · GitHub · B站 · X）
-- 扫码关注公众号，获取 AI 测评与 Vibe Coding 实战分享：
+- **全平台统一账户**：沃垠AI
+- **标签**：产品、运营出身，AI 深度测评，超级 OPC
+- **内容矩阵**：公众号、小红书、知乎、GitHub、B站、X 等
 
 <div align="left">
 <img src="public/wechat-qr.png" alt="沃垠AI 公众号二维码" width="680">
