@@ -118,7 +118,7 @@ Change `port` in `config.json` and restart. The program detects an occupied port
 - Follow the WeChat official account for AI reviews and Vibe Coding walkthroughs:
 
 <div align="left">
-<img src="public/wechat-qr.png" alt="沃垠AI WeChat official account QR code" width="160">
+<img src="public/wechat-qr.png" alt="沃垠AI WeChat official account QR code" width="360">
 </div>
 
 ## 🤝 Contributing
