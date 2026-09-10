@@ -34,17 +34,17 @@ Run one exe and your PC becomes a home media server — open the library by scan
 **Option 1: Download a release** (recommended)
 
 <!-- TODO(user): confirm the Release link is live once published -->
-Download `流光逸影.exe` from [Releases](https://github.com/woyin2024/lengyi-movielan/releases) and double-click to run.
+Download `liuguang-yiying.exe` from [Releases](https://github.com/woyin2024/lengyi-movielan/releases) and double-click to run.
 
 **Option 2: Build from source** (Go 1.26+)
 
 ```bash
 git clone https://github.com/woyin2024/lengyi-movielan.git
 cd lengyi-movielan
-go build -trimpath -ldflags "-s -w" -o 流光逸影.exe
+go build -trimpath -ldflags "-s -w" -o liuguang-yiying.exe
 ```
 
-Double-click `流光逸影.exe`. The desktop console opens automatically and you'll see:
+Double-click `liuguang-yiying.exe`. The desktop console opens automatically and you'll see:
 
 ```text
 ============================================
